@@ -1,37 +1,19 @@
 <script>
+    import postcss from 'postcss';
   import { writable } from 'svelte/store';
   
-  let prompt = writable('');  // Add this line
-  let negativePrompt;
-  let aspectRatio;
-  let steps; 
-  let selectedStyle;
-
-  if(typeof window !== 'undefined') {
-    prompt = writable(localStorage.getItem('prompt') || '');  // And this line
-    negativePrompt = writable(localStorage.getItem('negativePrompt') || '');
-    aspectRatio = writable(localStorage.getItem('aspectRatio') || '1024x1024');
-    steps = writable(localStorage.getItem('steps') || '30');
-   
-    prompt.subscribe(value => {
-      localStorage.setItem('prompt', value)
-    });
-    negativePrompt.subscribe(value => {
-      localStorage.setItem('negativePrompt', value)
-    });
-    aspectRatio.subscribe(value => {
-      localStorage.setItem('aspectRatio', value)
-    });
-    steps.subscribe(value => {
-      localStorage.setItem('steps', value)
-    });
-  } else {
-    prompt = writable('');  // And this line
-    negativePrompt = writable('');
-    aspectRatio = writable('1024x1024');
-    steps = writable('30');
-  }
+  let prompt = writable('');  
+  let negativePrompt = writable(''); 
+  let aspectRatio = writable('1024x1024');
+  let steps = writable('30');
+  let selectedStyle = writable('No Style');
+  
   let styles = writable([
+  {
+    style: "No Style",
+    positive: "",
+    negative: ""
+  },
   {
     style: "Enhance",
     positive: "breathtaking {prompt} . award-winning, professional, highly detailed",
@@ -99,6 +81,36 @@
   },
 ]);
 
+
+  if(typeof window !== 'undefined') {
+    prompt.set(localStorage.getItem('prompt') || '');
+    negativePrompt.set(localStorage.getItem('negativePrompt') || '');
+    aspectRatio.set(localStorage.getItem('aspectRatio') || '1024x1024');
+    steps.set(localStorage.getItem('steps') || '30');
+
+    prompt.subscribe(value => {
+      localStorage.setItem('prompt', value)
+    });
+    negativePrompt.subscribe(value => {
+      localStorage.setItem('negativePrompt', value)
+    });
+    aspectRatio.subscribe(value => {
+      localStorage.setItem('aspectRatio', value)
+    });
+    steps.subscribe(value => {
+      localStorage.setItem('steps', value)
+    });
+  }
+
+  selectedStyle.subscribe(value => {
+  let style = $styles.find(style => style.style === value);
+  if (style) {
+    let currentPrompt = $prompt; // Capture the current prompt
+    prompt.set(style.positive.replace("{prompt}", currentPrompt)); // Replace "{prompt}" with the captured prompt
+    negativePrompt.set(style.negative); // Replace the entire negativePrompt with the style's negative text
+  }
+});
+
 </script>
 
 <div class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 bg-gray-900 px-4 lg:px-0">
@@ -109,6 +121,7 @@
     <form class="flex flex-col mt-4 space-y-4 w-full lg:w-1/2 mr-0 lg:mr-4">
       <label>
         <textarea rows="3" required 
+                  bind:value={$prompt}
                   class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full" 
                   placeholder="Prompt (Required)"></textarea>
       </label>
@@ -126,7 +139,7 @@
           <select bind:value={$aspectRatio} 
                   class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
                   >
-            <option value="1024x1024" selected>1:1 - 1024x1024</option>
+            <option value="1024x1024">1:1 - 1024x1024</option>
             <option value="1344x768">16:9 - 1344x768</option>
             <option value="768x1344">9:16 - 768x1344</option>
             <option value="1152x896">4:3 - 1152x896</option>
@@ -143,14 +156,13 @@
                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full" 
                 >
         </label>
-            
+        
         <label class="w-full">
           Style:
-          <select bind:value={selectedStyle} 
-                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
-                  >
-            {#each $styles as style, i}
-              <option value={style.style}>{style.style}</option>
+          <select bind:value={$selectedStyle} 
+                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full">
+            {#each $styles as style (style.style)}
+              <option>{style.style}</option>
             {/each}
           </select>
         </label>
@@ -164,3 +176,23 @@
     </div>
   </div>
 </div>
+<style>
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+</style>
