@@ -5,6 +5,7 @@
   let negativePrompt;
   let aspectRatio;
   let steps; 
+  let selectedStyle;
 
   if(typeof window !== 'undefined') {
     prompt = writable(localStorage.getItem('prompt') || '');  // And this line
@@ -30,6 +31,74 @@
     aspectRatio = writable('1024x1024');
     steps = writable('30');
   }
+  let styles = writable([
+  {
+    style: "Enhance",
+    positive: "breathtaking {prompt} . award-winning, professional, highly detailed",
+    negative: "ugly, deformed, noisy, blurry, distorted, grainy"
+  },
+  {
+    style: "Anime",
+    positive: "anime artwork {prompt} . anime style, key visual, vibrant, studio anime,  highly detailed",
+    negative: "photo, deformed, black and white, realism, disfigured, low contrast"
+  },
+  {
+    style: "Photographic",
+    positive: "cinematic photo {prompt} . 35mm photograph, film, bokeh, professional, 4k, highly detailed",
+    negative: "drawing, painting, crayon, sketch, graphite, impressionist, noisy, blurry, soft, deformed, ugly"
+  },
+  {
+    style: "Digital Art",
+    positive: "concept art {prompt} . digital artwork, illustrative, painterly, matte painting, highly detailed",
+    negative: "photo, photorealistic, realism, ugly"
+  },
+  {
+    style: "Comic Book",
+    positive: "comic {prompt} . graphic illustration, comic art, graphic novel art, vibrant, highly detailed",
+    negative: "photograph, deformed, glitch, noisy, realistic, stock photo"
+  },
+  {
+    style: "Fantasy Art",
+    positive: "ethereal fantasy concept art of {prompt} . magnificent, celestial, ethereal, painterly, epic, majestic, magical, fantasy art, cover art, dreamy",
+    negative: "photographic, realistic, realism, 35mm film, dslr, cropped, frame, text, deformed, glitch, noise, noisy, off-center, deformed, cross-eyed, closed eyes, bad anatomy, ugly, disfigured, sloppy, duplicate, mutated, black and white"
+  },
+  {
+    style: "Analog Film",
+    positive: "analog film photo {prompt} . faded film, desaturated, 35mm photo, grainy, vignette, vintage, Kodachrome, Lomography, stained, highly detailed, found footage",
+    negative: "painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured"
+  },
+  {
+    style: "Neonpunk",
+    positive: "neonpunk style {prompt} . cyberpunk, vaporwave, neon, vibes, vibrant, stunningly beautiful, crisp, detailed, sleek, ultramodern, magenta highlights, dark purple shadows, high contrast, cinematic, ultra detailed, intricate, professional",
+    negative: "painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured"
+  },
+  {
+    style: "Isometric",
+    positive: "isometric style {prompt} . vibrant, beautiful, crisp, detailed, ultra detailed, intricate",
+    negative: "deformed, mutated, ugly, disfigured, blur, blurry, noise, noisy, realistic, photographic"
+  },
+  {
+    style: "Lowpoly",
+    positive: "low-poly style {prompt} . low-poly game art, polygon mesh, jagged, blocky, wireframe edges, centered composition",
+    negative: "noisy, sloppy, messy, grainy, highly detailed, ultra textured, photo"
+  },
+  {
+    style: "Cinematic",
+    positive: "cinematic film still {prompt} . shallow depth of field, vignette, highly detailed, high budget Hollywood movie, bokeh, cinemascope, moody, epic, gorgeous, film grain, grainy",
+    negative: "anime, cartoon, graphic, text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured"
+  },
+  {
+    style: "3D-Model",
+    positive: "professional 3D model {prompt} . octane render, highly detailed, volumetric, dramatic lighting",
+    negative: "ugly, deformed, noisy, low poly, blurry, painting"
+  },
+  {
+    style: "Pixel Art",
+    positive: "pixel-art {prompt} . low-res, blocky, pixel art style, 8-bit graphics",
+    negative: "sloppy, messy, blurry, noisy, highly detailed, ultra textured, photo, realistic"
+  },
+]);
+
 </script>
 
 <div class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 bg-gray-900 px-4 lg:px-0">
@@ -64,7 +133,7 @@
             <option value="896x1152">3:4 - 896x1152</option>
           </select>
         </label>
-                
+      
         <label class="w-full">
           Steps:
           <input bind:value={$steps} 
@@ -74,13 +143,23 @@
                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full" 
                 >
         </label>
-        
-        
+            
+        <label class="w-full">
+          Style:
+          <select bind:value={selectedStyle} 
+                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+                  >
+            {#each $styles as style, i}
+              <option value={style.style}>{style.style}</option>
+            {/each}
+          </select>
+        </label>
       </div>
+      
       <button type="submit" class="w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700">Generate</button>
     </form>
     
-    <div class="mt-4 lg:mt-0 bg-gray-600 w-full lg:w-1/2 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center">
+    <div class="ml-3 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-1/2 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center">
       Image you generate will appear here
     </div>
   </div>
