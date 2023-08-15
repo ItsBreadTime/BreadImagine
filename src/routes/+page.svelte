@@ -168,7 +168,7 @@
       headers: {
         accept: "*/*",
         "accept-language": "en-US,en;q=0.9",
-        apikey: "f326232c-23a7-4cee-930a-fe9063a142db",
+        apikey: import.meta.env.VITE_PUBLIC_API_KEY,
         "client-agent": "BreadImagine:v0.1:(discord)bread.trademark",
         "content-type": "application/json",
       },
@@ -240,7 +240,7 @@
     BreadImagine
   </h1>
   <p class="mb-4 hidden md:block">
-    Generate image using <span class="font-semibold">SDXL</span> from Stable Horde.
+    Generate images using <span class="font-semibold">SDXL</span> from Stable Horde.
   </p>
 
   <div
@@ -261,8 +261,8 @@
         <textarea
           rows="3"
           bind:value={$negativePrompt}
-          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 max-h-16 w-full"
-          placeholder="Negative Prompt (Optional - Will get removed if style is selected)"
+          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 h-16 w-full"
+          placeholder="Negative Prompt (Optional)"
         />
       </label>
 
@@ -307,13 +307,14 @@
 
       <button
         type="submit"
-        class="w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700"
+        class="w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning ? 'button-disabled': ''}"
+        disabled={isTaskRunning}
         on:click={generateImage}>Generate</button
       >
     </form>
 
     <div
-      class="lg:ml-3 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-1/2 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
+      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
     >
       {#if isTaskRunning}
         <div>
@@ -386,5 +387,9 @@
     flex-grow: 0; /* Prevent images from stretching */
     flex-shrink: 0; /* Prevent images from shrinking */
     padding: 5px; /* Add spacing between images */
+  }
+  .button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>
