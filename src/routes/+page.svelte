@@ -268,7 +268,7 @@
 
       <div class="flex space-x-4">
         <label class="w-full">
-          Aspect Ratio:
+          Size:
           <select
             bind:value={$aspectRatio}
             class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
