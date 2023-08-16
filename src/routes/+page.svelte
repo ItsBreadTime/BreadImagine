@@ -112,6 +112,7 @@
     aspectRatio.set(localStorage.getItem("aspectRatio") || "1024x1024");
     steps.set(localStorage.getItem("steps") || "30");
     selectedStyle.set(localStorage.getItem("selectedStyle") || "No Style");
+    sampler.set(localStorage.getItem("sampler") || "k_dpmpp_2m");
 
     negativePrompt.subscribe((value) => {
       localStorage.setItem("negativePrompt", value);
