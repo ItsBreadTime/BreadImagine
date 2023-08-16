@@ -11,7 +11,6 @@
   let sampler = writable("k_dpmpp_2m");
   let cfgScale = writable("7");
   let seed = writable("");
-  let showAdvancedOptions = writable(false);
 
   let styles = writable([
     {
@@ -272,22 +271,14 @@
       </label>
 
       <div class="flex">
-        <label class="flex-grow mr-2">
+        <label class="flex-grow">
           <textarea
-            rows="3"
+            rows="1"
             bind:value={$negativePrompt}
             class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 h-16 w-full"
             placeholder="Negative Prompt (Optional)"
           />
         </label>
-
-        <button
-          type="button"
-          on:click={() => showAdvancedOptions.set(!showAdvancedOptions)}
-          class="rounded border border-gray-600 bg-gray-800 p-2 flex items-center justify-center min-w-min self-center"
-        >
-          <img src="settings.svg" alt="Settings" width="36" height="36" />
-        </button>
       </div>
 
       <div class="flex space-x-4">
@@ -295,7 +286,7 @@
           Size:
           <select
             bind:value={$aspectRatio}
-            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full"
           >
             <option value="1024x1024">1:1 - 1024x1024</option>
             <option value="1344x768">16:9 - 1344x768</option>
@@ -304,63 +295,43 @@
             <option value="896x1152">3:4 - 896x1152</option>
           </select>
         </label>
-
-
         <label class="w-full">
           Style:
           <select
             bind:value={$selectedStyle}
-            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full"
           >
             {#each $styles as style (style.style)}
               <option>{style.style}</option>
             {/each}
           </select>
         </label>
+      </div>
 
-        {#if $showAdvancedOptions}
-          <div class="p-2">
-            <div class="flex space-x-4">
-              <label class="w-full">
-                Steps:
-                <select
-                  bind:value={$steps}
-                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
-                >
-                  <option value="30">30</option>
-                  <option value="35">35</option>
-                  <option value="40">40</option>
-                  <option value="45">45</option>
-                  <option value="50">50</option>
-                </select>
-              </label>
-
-            </div>
-            <div class="flex space-x-4">
-              <label class="w-full">
-                Sampler:
-                <select
-                  bind:value={$sampler}
-                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
-                >
-                  <option value="k_dpmpp_2m">k_dpmpp_2m</option>
-                  <option value="k_dpmpp_sde">k_dpmpp_sde</option>
-                  <option value="k_euler">k_euler</option>
-                  <option value="k_euler_a">k_euler_a</option>
-                </select>
-              </label>
-
-              <label class="w-full">
-                Seed:
-                <input
-                  bind:value={$seed}
-                  type="number"
-                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
-                />
-              </label>
-            </div>
-          </div>
-        {/if}
+      <div class="flex space-x-4">
+        <label class="w-full">
+          <select
+            bind:value={$steps}
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+          >
+            <option value="30">Steps: 30</option>
+            <option value="35">Steps: 35</option>
+            <option value="40">Steps: 40</option>
+            <option value="45">Steps: 45</option>
+            <option value="50">Steps: 50</option>
+          </select>
+        </label>
+        <label class="w-full">
+          <select
+            bind:value={$sampler}
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+          >
+            <option value="k_dpmpp_2m">DPM++ 2M</option>
+            <option value="k_dpmpp_sde">DPM++ SDE</option>
+            <option value="k_euler">Euler</option>
+            <option value="k_euler_a">Euler A</option>
+          </select>
+        </label>
       </div>
 
       <button
