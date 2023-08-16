@@ -8,6 +8,10 @@
   let steps = writable("30");
   let selectedStyle = writable("No Style");
   let generatedImages = writable([]);
+  let sampler = writable("k_dpmpp_2m");
+  let cfgScale = writable("7");
+  let seed = writable("");
+  let showAdvancedOptions = writable(false);
 
   let styles = writable([
     {
@@ -122,14 +126,25 @@
     selectedStyle.subscribe((value) => {
       localStorage.setItem("selectedStyle", value);
     });
+    sampler.subscribe((value) => {
+      localStorage.setItem("sampler", value);
+    });
+    cfgScale.subscribe((value) => {
+      localStorage.setItem("cfgScale", value);
+    });
+    seed.subscribe((value) => {
+      localStorage.setItem("seed", value);
+    });
   }
 
   async function generateImage(e) {
     e.preventDefault();
 
+    isTaskRunning = true;
+
     let [width, height] = $aspectRatio.split("x");
 
-    let seed = Math.floor(Math.random() * 1000000).toString();
+    let seedValue = $seed || Math.floor(Math.random() * 1000000).toString();
 
     let selectedStyleObj = $styles.find(
       (style) => style.style === $selectedStyle
@@ -140,9 +155,9 @@
     let bodyObject = {
       prompt: `${positivePrompt} ### ${negativePrompt}`,
       params: {
-        cfg_scale: 7,
-        seed: seed, // Use the random seed value
-        sampler_name: "k_euler",
+        cfg_scale: parseInt($cfgScale),
+        seed: seedValue,
+        sampler_name: $sampler,
         height: parseInt(height),
         width: parseInt(width),
         post_processing: [],
@@ -178,7 +193,6 @@
 
     let data = await response.json();
     startCheckStatus(data.id);
-    isTaskRunning = true;
   }
 
   let loadingIcon = `<img src="loading.svg">`;
@@ -253,18 +267,28 @@
           required
           bind:value={$prompt}
           class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-0 h-full w-full"
-          placeholder="Prompt (Required)"
+          placeholder="Prompt"
         />
       </label>
 
-      <label>
-        <textarea
-          rows="3"
-          bind:value={$negativePrompt}
-          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 h-16 w-full"
-          placeholder="Negative Prompt (Optional)"
-        />
-      </label>
+      <div class="flex">
+        <label class="flex-grow mr-2">
+          <textarea
+            rows="3"
+            bind:value={$negativePrompt}
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 h-16 w-full"
+            placeholder="Negative Prompt (Optional)"
+          />
+        </label>
+
+        <button
+          type="button"
+          on:click={() => showAdvancedOptions.set(!showAdvancedOptions)}
+          class="rounded border border-gray-600 bg-gray-800 p-2 flex items-center justify-center min-w-min self-center"
+        >
+          <img src="settings.svg" alt="Settings" width="36" height="36" />
+        </button>
+      </div>
 
       <div class="flex space-x-4">
         <label class="w-full">
@@ -281,16 +305,6 @@
           </select>
         </label>
 
-        <label class="w-full">
-          Steps:
-          <input
-            bind:value={$steps}
-            type="number"
-            min="20"
-            max="50"
-            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
-          />
-        </label>
 
         <label class="w-full">
           Style:
@@ -303,11 +317,57 @@
             {/each}
           </select>
         </label>
+
+        {#if $showAdvancedOptions}
+          <div class="p-2">
+            <div class="flex space-x-4">
+              <label class="w-full">
+                Steps:
+                <select
+                  bind:value={$steps}
+                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+                >
+                  <option value="30">30</option>
+                  <option value="35">35</option>
+                  <option value="40">40</option>
+                  <option value="45">45</option>
+                  <option value="50">50</option>
+                </select>
+              </label>
+
+            </div>
+            <div class="flex space-x-4">
+              <label class="w-full">
+                Sampler:
+                <select
+                  bind:value={$sampler}
+                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+                >
+                  <option value="k_dpmpp_2m">k_dpmpp_2m</option>
+                  <option value="k_dpmpp_sde">k_dpmpp_sde</option>
+                  <option value="k_euler">k_euler</option>
+                  <option value="k_euler_a">k_euler_a</option>
+                </select>
+              </label>
+
+              <label class="w-full">
+                Seed:
+                <input
+                  bind:value={$seed}
+                  type="number"
+                  class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+                />
+              </label>
+            </div>
+          </div>
+        {/if}
       </div>
 
       <button
         type="submit"
-        class="w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning ? 'button-disabled': ''}"
+        class="w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning
+          ? 'button-disabled'
+          : ''}"
         disabled={isTaskRunning}
         on:click={generateImage}>Generate</button
       >
