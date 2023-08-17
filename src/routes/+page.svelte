@@ -11,6 +11,7 @@
   let sampler = writable("k_dpmpp_2m");
   let cfgScale = writable("7");
   let seed = writable("");
+  let model = writable("SDXL_beta::stability.ai#6901");
 
   let styles = writable([
     {
@@ -113,6 +114,8 @@
     steps.set(localStorage.getItem("steps") || "30");
     selectedStyle.set(localStorage.getItem("selectedStyle") || "No Style");
     sampler.set(localStorage.getItem("sampler") || "k_dpmpp_2m");
+    cfgScale.set(localStorage.getItem("cfgScale") || "7");
+    model.set(localStorage.getItem("model") || "SDXL_beta::stability.ai#6901");
 
     negativePrompt.subscribe((value) => {
       localStorage.setItem("negativePrompt", value);
@@ -134,6 +137,9 @@
     });
     seed.subscribe((value) => {
       localStorage.setItem("seed", value);
+    });
+    model.subscribe((value) => {
+      localStorage.setItem("model", value);
     });
   }
 
@@ -171,7 +177,7 @@
       nsfw: true,
       censor_nsfw: false,
       trusted_workers: true,
-      models: ["SDXL_beta::stability.ai#6901"],
+      models: [$model],
       r2: true,
       replacement_filter: true,
       shared: false,
@@ -289,11 +295,11 @@
             bind:value={$aspectRatio}
             class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full"
           >
-            <option value="1024x1024">1:1 - 1024x1024</option>
-            <option value="1344x768">16:9 - 1344x768</option>
-            <option value="768x1344">9:16 - 768x1344</option>
-            <option value="1152x896">4:3 - 1152x896</option>
-            <option value="896x1152">3:4 - 896x1152</option>
+            <option value="1024x1024">1:1</option>
+            <option value="1344x768">16:9</option>
+            <option value="768x1344">9:16</option>
+            <option value="1152x896">4:3</option>
+            <option value="896x1152">3:4</option>
           </select>
         </label>
         <label class="w-full">
@@ -320,6 +326,32 @@
             <option value="40">Steps: 40</option>
             <option value="45">Steps: 45</option>
             <option value="50">Steps: 50</option>
+          </select>
+        </label>
+        <label class="w-full">
+          <select
+            bind:value={$model}
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+          >
+            <option value="SDXL_beta::stability.ai#6901">SDXL</option>
+            <option value="ICBINP - I Can't Believe It's Not Photography">ICBINP</option>
+            <option value="Dreamshaper">Dreamshaper</option>
+            <option value="Deliberate">Deliberate</option>
+            <option value="Anything Diffusion">Anything Diffusion</option>
+          </select>
+        </label>
+      </div>
+      <div class="flex space-x-4">
+        <label class="w-full">
+          <select
+            bind:value={$cfgScale}
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+          >
+            <option value="5">CFG: 5</option>
+            <option value="6">CFG: 6</option>
+            <option value="7">CFG: 7</option>
+            <option value="8">CFG: 8</option>
+            <option value="9">CFG: 9</option>
           </select>
         </label>
         <label class="w-full">
