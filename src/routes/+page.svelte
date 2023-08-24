@@ -300,7 +300,7 @@
           rows="3"
           required
           bind:value={$prompt}
-          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-0 h-full w-full"
+          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-0 h-full w-full plausible-event-name=prompt"
           placeholder="Prompt"
         />
       </label>
@@ -310,7 +310,7 @@
           <textarea
             rows="1"
             bind:value={$negativePrompt}
-            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 h-16 w-full"
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 h-16 w-full plausible-event-name=negativePrompt"
             placeholder="Negative Prompt (Optional)"
           />
         </label>
@@ -318,7 +318,7 @@
       <div class="flex space-x-4">
         <button
           on:click={toggleAdvancedOptions}
-          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full"
+          class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full plausible-event-name=toggleAdvancedOptions"
           >{showAdvancedOptions ? "Hide" : "Show"} Advanced Options</button
         >
 
@@ -326,7 +326,7 @@
           on:click={resetAll}
           class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1"
         >
-          <img src="trash.svg" alt="Reset all" class="w-6 h-6" />
+          <img src="trash.svg" alt="Reset all" class="w-6 h-6 plausible-event-name=resetAll" />
         </button>
       </div>
 
@@ -335,7 +335,7 @@
           Size:
           <select
             bind:value={$aspectRatio}
-            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full"
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full plausible-event-name=aspectRatio"
           >
             <option value="1024x1024">1:1</option>
             <option value="1344x768">16:9</option>
@@ -348,7 +348,7 @@
           Style:
           <select
             bind:value={$selectedStyle}
-            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full"
+            class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-2 w-full plausible-event-name=selectedStyle"
           >
             {#each $styles as style (style.style)}
               <option>{style.style}</option>
@@ -363,7 +363,7 @@
           <label class="w-full">
             <select
               bind:value={$steps}
-              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full plausible-event-name=steps"
             >
               <option value="30">Steps: 30</option>
               <option value="35">Steps: 35</option>
@@ -375,7 +375,7 @@
           <label class="w-full">
             <select
               bind:value={$model}
-              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full plausible-event-name=model"
             >
               <option value="SDXL_beta::stability.ai#6901">SDXL</option>
               <option value="ICBINP - I Can't Believe It's Not Photography"
@@ -391,7 +391,7 @@
           <label class="w-full">
             <select
               bind:value={$cfgScale}
-              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full plausible-event-name=cfgScale"
             >
               <option value="5">CFG: 5</option>
               <option value="6">CFG: 6</option>
@@ -403,7 +403,7 @@
           <label class="w-full">
             <select
               bind:value={$sampler}
-              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full"
+              class="p-2 rounded border border-gray-600 bg-gray-800 text-white w-full plausible-event-name=sampler"
             >
               <option value="k_dpmpp_2m">DPM++ 2M</option>
               <option value="k_dpmpp_sde">DPM++ SDE</option>
@@ -416,7 +416,7 @@
 
       <button
         type="submit"
-        class="w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning
+        class="plausible-event-name=generate w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning
           ? 'button-disabled'
           : ''}"
         disabled={isTaskRunning}
