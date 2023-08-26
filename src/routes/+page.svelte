@@ -140,7 +140,6 @@
     selectedStyle.set(localStorage.getItem("selectedStyle") || "No Style");
     sampler.set(localStorage.getItem("sampler") || "k_dpmpp_2m");
     cfgScale.set(localStorage.getItem("cfgScale") || "7");
-
     model.set(localStorage.getItem("model") || "SDXL_beta::stability.ai#6901");
 
     negativePrompt.subscribe((value) => {
@@ -177,9 +176,6 @@
 
     isTaskRunning = true;
 
-    const formData = new FormData(e.target);
-    const turnstileResponse = formData.get("cf-turnstile-response");
-
     let [width, height] = $aspectRatio.split("x");
 
     let seedValue = $seed || Math.floor(Math.random() * 1000000).toString();
@@ -205,7 +201,6 @@
         hires_fix: $model !== "SDXL_beta::stability.ai#6901",
         clip_skip: 1,
         n: 2,
-        "cf-turnstile-response": turnstileResponse,
       },
       nsfw: true,
       censor_nsfw: false,
@@ -218,19 +213,17 @@
       dry_run: false,
     };
 
-    let response = await fetch(
-      "https://breadimagine.ibread.workers.dev/api/v2/generate/async",
-      {
-        headers: {
-          accept: "*/*",
-          "accept-language": "en-US,en;q=0.9",
-          "client-agent": "BreadImagine:v0.1:(discord)bread.trademark",
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(bodyObject),
-        method: "POST",
-      }
-    );
+    let response = await fetch("https://aihorde.net/api/v2/generate/async", {
+      headers: {
+        accept: "*/*",
+        "accept-language": "en-US,en;q=0.9",
+        apikey: import.meta.env.VITE_PUBLIC_API_KEY,
+        "client-agent": "BreadImagine:v0.1:(discord)bread.trademark",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(bodyObject),
+      method: "POST",
+    });
 
     let data = await response.json();
     startCheckStatus(data.id);
@@ -333,11 +326,7 @@
           on:click={resetAll}
           class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1"
         >
-          <img
-            src="trash.svg"
-            alt="Reset all"
-            class="w-6 h-6 plausible-event-name=resetAll"
-          />
+          <img src="trash.svg" alt="Reset all" class="w-6 h-6 plausible-event-name=resetAll" />
         </button>
       </div>
 
@@ -424,12 +413,7 @@
           </label>
         </div>
       {/if}
-      <div
-        class="cf-turnstile"
-        data-sitekey="0x4AAAAAAAJArzFOsmSXpPOB"
-        data-callback="onTurnstileSuccess"
-        data-size="invisible"
-      />
+
       <button
         type="submit"
         class="plausible-event-name=generate w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning
