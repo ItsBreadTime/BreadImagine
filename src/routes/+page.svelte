@@ -22,19 +22,25 @@
   }
 
   function resetAll() {
-    prompt.set("");
-    negativePrompt.set("");
-    aspectRatio.set("1024x1024");
-    steps.set("30");
-    selectedStyle.set("No Style");
-    generatedImages.set([]);
-    sampler.set("k_dpmpp_2m");
-    cfgScale.set("7");
-    seed.set("");
-    model.set("SDXL_beta::stability.ai#6901");
-    showAdvancedOptions = false;
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("showAdvancedOptions");
+    if (
+      confirm(
+        "This will reset ALL of your selected options.\nAre you sure you want to continue?"
+      )
+    ) {
+      prompt.set("");
+      negativePrompt.set("");
+      aspectRatio.set("1024x1024");
+      steps.set("30");
+      selectedStyle.set("No Style");
+      generatedImages.set([]);
+      sampler.set("k_dpmpp_2m");
+      cfgScale.set("7");
+      seed.set("");
+      model.set("SDXL_beta::stability.ai#6901");
+      showAdvancedOptions = false;
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("showAdvancedOptions");
+      }
     }
   }
 
@@ -321,12 +327,15 @@
           class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1 w-full plausible-event-name=toggleAdvancedOptions"
           >{showAdvancedOptions ? "Hide" : "Show"} Advanced Options</button
         >
-
         <button
           on:click={resetAll}
           class="p-2 rounded border border-gray-600 bg-gray-800 text-white mt-1"
         >
-          <img src="trash.svg" alt="Reset all" class="w-6 h-6 plausible-event-name=resetAll" />
+          <img
+            src="trash.svg"
+            alt="Reset all"
+            class="w-6 h-6 plausible-event-name=resetAll"
+          />
         </button>
       </div>
 
