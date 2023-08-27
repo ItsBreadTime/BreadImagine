@@ -292,7 +292,7 @@
 </script>
 
 <div
-  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 bg-gray-900 px-4 lg:px-0"
+  class="h-screen flex flex-col items-center justify-center tracking-widest text-neutral-400 bg-neutral-900 px-4 lg:px-0"
 >
   <h1
     class="font-mono text-2xl lg:text-4xl font-bold tracking-wider w-full text-center"
@@ -304,7 +304,7 @@
   </p>
 
   <div
-    class="p-4 lg:p-10 rounded-lg bg-gray-700 mt-4 text-gray-300 w-full lg:w-3/4 mx-auto flex flex-col lg:flex-row h-5/6"
+    class="p-4 lg:p-10 rounded-lg bg-neutral-800 mt-4 text-neutral-400 w-full lg:w-3/4 mx-auto flex flex-col lg:flex-row h-5/6"
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
@@ -316,7 +316,7 @@
           rows="3"
           required
           bind:value={$prompt}
-          class="p-2 rounded border border-gray-600 bg-gray-800  mt-0 h-full w-full plausible-event-name=prompt"
+          class="p-2 rounded border border-neutral-700 bg-neutral-900  mt-0 h-full w-full plausible-event-name=prompt"
           placeholder="Prompt"
         />
       </label>
@@ -326,7 +326,7 @@
           <textarea
             rows="1"
             bind:value={$negativePrompt}
-            class="p-2 rounded border border-gray-600 bg-gray-800  mt-1 h-16 w-full plausible-event-name=negativePrompt"
+            class="p-2 rounded border border-neutral-700 bg-neutral-900  mt-1 h-16 w-full plausible-event-name=negativePrompt"
             placeholder="Negative Prompt (Optional)"
           />
         </label>
@@ -334,12 +334,12 @@
       <div class="flex space-x-4">
         <button
           on:click={toggleAdvancedOptions}
-          class="p-2 rounded border border-gray-600 bg-gray-800  mt-1 w-full plausible-event-name=toggleAdvancedOptions"
+          class="p-2 rounded border border-neutral-700 bg-neutral-900  mt-1 w-full plausible-event-name=toggleAdvancedOptions"
           >{showAdvancedOptions ? "Hide" : "Show"} Advanced Options</button
         >
         <button
           on:click={resetAll}
-          class="p-2 rounded border border-gray-600 bg-gray-800  mt-1 plausible-event-name=resetAll"
+          class="p-2 rounded border border-neutral-700 bg-neutral-900  mt-1 plausible-event-name=resetAll"
         >
           <img
             src="trash.svg"
@@ -354,7 +354,7 @@
           Size:
           <select
             bind:value={$aspectRatio}
-            class="p-2 rounded border border-gray-600 bg-gray-800  mt-2 w-full plausible-event-name=aspectRatio"
+            class="p-2 rounded border border-neutral-700 bg-neutral-900  mt-2 w-full plausible-event-name=aspectRatio"
           >
             <option value="1024x1024">1:1</option>
             <option value="1344x768">16:9</option>
@@ -367,7 +367,7 @@
           Style:
           <select
             bind:value={$selectedStyle}
-            class="p-2 rounded border border-gray-600 bg-gray-800  mt-2 w-full plausible-event-name=selectedStyle"
+            class="p-2 rounded border border-neutral-700 bg-neutral-900  mt-2 w-full plausible-event-name=selectedStyle"
           >
             {#each $styles as style (style.style)}
               <option>{style.style}</option>
@@ -377,12 +377,12 @@
       </div>
 
       {#if showAdvancedOptions}
-        <hr class="border-gray-600 mb-4 border-4 rounded" />
+        <hr class="border-neutral-700 mb-4 border-4 rounded" />
         <div class="flex space-x-4">
           <label class="w-full">
             <select
               bind:value={$steps}
-              class="p-2 rounded border border-gray-600 bg-gray-800  w-full plausible-event-name=steps"
+              class="p-2 rounded border border-neutral-700 bg-neutral-900  w-full plausible-event-name=steps"
             >
               <option value="30">Steps: 30</option>
               <option value="35">Steps: 35</option>
@@ -394,7 +394,7 @@
           <label class="w-full">
             <select
               bind:value={$model}
-              class="p-2 rounded border border-gray-600 bg-gray-800  w-full plausible-event-name=model"
+              class="p-2 rounded border border-neutral-700 bg-neutral-900  w-full plausible-event-name=model"
             >
               <option value="SDXL_beta::stability.ai#6901">SDXL</option>
               <option value="ICBINP - I Can't Believe It's Not Photography"
@@ -410,7 +410,7 @@
           <label class="w-full">
             <select
               bind:value={$cfgScale}
-              class="p-2 rounded border border-gray-600 bg-gray-800  w-full plausible-event-name=cfgScale"
+              class="p-2 rounded border border-neutral-700 bg-neutral-900  w-full plausible-event-name=cfgScale"
             >
               <option value="5">CFG: 5</option>
               <option value="6">CFG: 6</option>
@@ -422,7 +422,7 @@
           <label class="w-full">
             <select
               bind:value={$sampler}
-              class="p-2 rounded border border-gray-600 bg-gray-800  w-full plausible-event-name=sampler"
+              class="p-2 rounded border border-neutral-700 bg-neutral-900  w-full plausible-event-name=sampler"
             >
               <option value="k_dpmpp_2m">DPM++ 2M</option>
               <option value="k_dpmpp_sde">DPM++ SDE</option>
@@ -435,17 +435,17 @@
 
       <button
         type="submit"
-        class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 {isTaskRunning
+        class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-slate-700 rounded hover:bg-slate-800 {isTaskRunning
           ? 'button-disabled'
           : ''}"
         disabled={isTaskRunning}
         on:click={generateImage}
-        >Generate <span class="hidden md:inline-block text-xs ml-1 font-medium bg-blue-800 p-1 rounded group-hover:bg-blue-900">CTRL+Enter</span>
+        >Generate <span class="hidden md:inline-block text-xs ml-1 font-medium bg-slate-600 p-1 rounded group-hover:bg-slate-700">CTRL+Enter</span>
       </button>
     </form>
 
     <div
-      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
+      class="lg:ml-2 mt-4 lg:mt-0 bg-neutral-700 w-full lg:w-3/5 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
     >
       {#if isTaskRunning}
         <div>
