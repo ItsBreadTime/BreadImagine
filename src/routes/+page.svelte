@@ -283,6 +283,12 @@
     const images = data.generations.map((gen) => gen.img);
     generatedImages.set(images);
   }
+  function handleKeyDown(event) {
+    // Checking the Ctrl + Enter combination
+    if (event.ctrlKey && event.key === "Enter") {
+      generateImage(event);
+    }
+  }
 </script>
 
 <div
@@ -300,7 +306,11 @@
   <div
     class="p-4 lg:p-10 rounded-lg bg-gray-700 mt-4 text-gray-300 w-full lg:w-3/4 mx-auto flex flex-col lg:flex-row h-5/6"
   >
-    <form class="flex flex-col mt-4 space-y-4 w-full lg:w-1/2 mr-0 lg:mr-4">
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <form
+      class="flex flex-col mt-4 space-y-4 w-full lg:w-1/2 mr-0 lg:mr-4"
+      on:keydown={handleKeyDown}
+    >
       <label>
         <textarea
           rows="3"
@@ -425,12 +435,13 @@
 
       <button
         type="submit"
-        class="plausible-event-name=generate w-full p-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-700 {isTaskRunning
+        class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 {isTaskRunning
           ? 'button-disabled'
           : ''}"
         disabled={isTaskRunning}
-        on:click={generateImage}>Generate</button
-      >
+        on:click={generateImage}
+        >Generate <span class="hidden md:inline-block text-xs ml-1 font-medium bg-blue-800 p-1 rounded group-hover:bg-blue-900">CTRL+Enter</span>
+      </button>
     </form>
 
     <div
