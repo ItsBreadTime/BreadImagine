@@ -351,7 +351,7 @@
 
       <div class="flex space-x-4">
         <label class="w-full">
-          Size:
+          Ratio:
           <select
             bind:value={$aspectRatio}
             class="p-2 rounded border border-gray-600 bg-gray-800 mt-2 w-full plausible-event-name=aspectRatio"
