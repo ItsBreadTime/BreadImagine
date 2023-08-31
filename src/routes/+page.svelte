@@ -445,6 +445,13 @@
           >CTRL+Enter</span
         >
       </button>
+      <div
+        class="cf-turnstile"
+        data-sitekey="0x4AAAAAAAJArzFOsmSXpPOB"
+        data-callback="javascriptCallback"
+        theme="dark"
+        appearance="interaction-only"
+      />
     </form>
 
     <div
