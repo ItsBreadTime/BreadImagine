@@ -1,7 +1,6 @@
 <script>
   // @ts-nocheck
   import { writable } from "svelte/store";
-  import { Turnstile } from "svelte-turnstile";
 
   let prompt = writable("");
   let negativePrompt = writable("");
@@ -323,7 +322,6 @@
           bind:value={$prompt}
           class="p-2 rounded border border-gray-600 bg-gray-800 mt-0 h-full w-full plausible-event-name=prompt"
           placeholder="Prompt"
-          maxlength="999"
         />
       </label>
 
@@ -433,8 +431,8 @@
             </select>
           </label>
         </div>
-        <Turnstile siteKey="0x4AAAAAAAJArzFOsmSXpPOB" theme="dark" appearance="interaction-only"/>
       {/if}
+
       <button
         type="submit"
         class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 {isTaskRunning
