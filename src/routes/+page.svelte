@@ -447,7 +447,7 @@
     </form>
 
     <div
-      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-64 lg:h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
+      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-64 h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
     >
       {#if isTaskRunning}
         <div>
