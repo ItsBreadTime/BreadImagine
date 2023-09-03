@@ -295,7 +295,7 @@
 </script>
 
 <div
-  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 bg-gray-900 px-4 lg:px-0"
+  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300  px-4 lg:px-0"
 >
   <h1
     class="font-mono text-2xl lg:text-4xl font-bold tracking-wider w-full text-center"
@@ -307,7 +307,7 @@
   </p>
 
   <div
-    class="p-4 lg:p-10 rounded-lg bg-gray-700 mt-4 text-gray-300 w-full lg:w-3/4 mx-auto flex flex-col lg:flex-row h-5/6"
+    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-300 w-full lg:w-3/4 mx-auto flex flex-col lg:flex-row h-5/6"
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
@@ -447,7 +447,7 @@
     </form>
 
     <div
-      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center"
+      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
     >
       {#if isTaskRunning}
         <div>
@@ -470,24 +470,29 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
+  :global(html) {
+    background: theme(colors.gray.900);
+  }
+
   ::-webkit-scrollbar {
     width: 10px;
   }
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: theme(colors.slate.800);
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: theme(colors.slate.600);
+    border: 1px solid theme(colors.neutral.800);
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: theme(colors.slate.500);
   }
 
   .loading-container {
@@ -511,7 +516,6 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    overflow: auto; /* This allows the div to maintain its size and provides scrollbar when images overflow. */
   }
   .generated-image {
     max-width: 100%;
