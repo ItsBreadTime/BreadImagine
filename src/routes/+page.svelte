@@ -295,7 +295,7 @@
 </script>
 
 <div
-  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300  px-4 lg:px-0"
+  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 px-4 lg:px-0"
 >
   <h1
     class="font-mono text-2xl lg:text-4xl font-bold tracking-wider w-full text-center"
@@ -303,7 +303,11 @@
     BreadImagine
   </h1>
   <p class="mb-4 hidden md:block">
-    Generate images using <span class="font-semibold">SDXL</span>, powered by <a href="https://github.com/Haidra-Org/AI-Horde" class="underline decoration-gray-500">Stable Horde</a>.
+    Generate images using <span class="font-semibold">SDXL</span>, powered by
+    <a
+      href="https://github.com/Haidra-Org/AI-Horde"
+      class="underline decoration-gray-500">Stable Horde</a
+    >.
   </p>
 
   <div
@@ -345,11 +349,11 @@
             bind:value={$aspectRatio}
             class="p-2 rounded border border-gray-600 bg-gray-800 mt-2 w-full plausible-event-name=aspectRatio"
           >
-            <option value="1024x1024">1:1</option>
-            <option value="1344x768">16:9</option>
-            <option value="768x1344">9:16</option>
-            <option value="1152x896">4:3</option>
-            <option value="896x1152">3:4</option>
+            <option value="1024x1024">1:1 (Square)</option>
+            <option value="1344x768">16:9 (Landscape)</option>
+            <option value="768x1344">9:16 (Portrait)</option>
+            <option value="1152x896">4:3 (Landscape)</option>
+            <option value="896x1152">3:4 (Portrait)</option>
           </select>
         </label>
         <label class="w-full">
@@ -366,7 +370,6 @@
       </div>
 
       {#if showAdvancedOptions}
-      
         <hr class="border-gray-600 mb-4 border-4 rounded" />
         <div class="flex">
           <label class="flex-grow">
@@ -425,10 +428,12 @@
               class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=sampler"
             >
               <option value="k_dpmpp_2m">DPM++ 2M</option>
+              <option value="k_dpmpp_2s_a">DPM++ 2S A</option>
               <option value="k_dpmpp_sde">DPM++ SDE</option>
               <option value="k_euler">Euler</option>
               <option value="k_euler_a">Euler A</option>
-              <option value="k_euler_a">Euler A</option>
+              <option value="DDIM">DDIM</option>
+              <option value="dpmsolver">dpmsolver</option>
             </select>
           </label>
         </div>
@@ -449,7 +454,7 @@
     </form>
 
     <div
-      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-full h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
+      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/4 xl:w-full h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
     >
       {#if isTaskRunning}
         <div>
