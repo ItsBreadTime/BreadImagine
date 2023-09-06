@@ -206,7 +206,7 @@
         karras: true,
         hires_fix: $model !== "SDXL_beta::stability.ai#6901",
         clip_skip: 1,
-        n: 2,
+        n: $model !== "SDXL_beta::stability.ai#6901" ? 1 : 2,
       },
       nsfw: true,
       censor_nsfw: false,
@@ -303,11 +303,11 @@
     BreadImagine
   </h1>
   <p class="mb-4 hidden md:block">
-    Generate images using <span class="font-semibold">SDXL</span> from Stable Horde.
+    Generate images using <span class="font-semibold">SDXL</span>, powered by <a href="https://github.com/Haidra-Org/AI-Horde" class="underline decoration-gray-500">Stable Horde</a>.
   </p>
 
   <div
-    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-300 w-full lg:w-3/4 mx-auto flex flex-col lg:flex-row h-5/6"
+    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-300 w-full lg:w-5/6 mx-auto flex flex-col lg:flex-row h-5/6"
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
@@ -324,16 +324,6 @@
         />
       </label>
 
-      <div class="flex">
-        <label class="flex-grow">
-          <textarea
-            rows="1"
-            bind:value={$negativePrompt}
-            class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 h-16 w-full plausible-event-name=negativePrompt"
-            placeholder="Negative Prompt (Optional)"
-          />
-        </label>
-      </div>
       <div class="flex space-x-4">
         <button
           on:click={toggleAdvancedOptions}
@@ -376,7 +366,18 @@
       </div>
 
       {#if showAdvancedOptions}
+      
         <hr class="border-gray-600 mb-4 border-4 rounded" />
+        <div class="flex">
+          <label class="flex-grow">
+            <textarea
+              rows="1"
+              bind:value={$negativePrompt}
+              class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 h-16 w-full plausible-event-name=negativePrompt"
+              placeholder="Negative Prompt (Optional)"
+            />
+          </label>
+        </div>
         <div class="flex space-x-4">
           <label class="w-full">
             <select
@@ -427,6 +428,7 @@
               <option value="k_dpmpp_sde">DPM++ SDE</option>
               <option value="k_euler">Euler</option>
               <option value="k_euler_a">Euler A</option>
+              <option value="k_euler_a">Euler A</option>
             </select>
           </label>
         </div>
@@ -447,7 +449,7 @@
     </form>
 
     <div
-      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/5 h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
+      class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-full h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
     >
       {#if isTaskRunning}
         <div>
