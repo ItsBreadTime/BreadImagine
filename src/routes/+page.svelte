@@ -1,6 +1,7 @@
 <script>
   // @ts-nocheck
   import { writable } from "svelte/store";
+  import { onMount } from "svelte";
 
   let prompt = writable("");
   let negativePrompt = writable("");
@@ -43,6 +44,15 @@
       }
     }
   }
+
+  onMount(() => {
+        if (window.self !== window.top) {
+            alert("This website is embedding BreadImagine, made by bread.trademark. Please use the original site instead at imagine.breadtm.xyz");
+            if(confirm("Do you want to go to the original BreadImagine?\nhttps://imagine.breadtm.xyz")) {
+                window.top.location.href = "https://imagine.breadtm.xyz";
+            }
+        }
+    });
 
   let styles = writable([
     {
