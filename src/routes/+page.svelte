@@ -44,6 +44,21 @@
     }
   }
 
+  onMount(() => {
+    if (window.self !== window.top) {
+      alert(
+        "This website is embedding BreadImagine, made by bread.trademark. Please use the original site instead at imagine.breadtm.xyz"
+      );
+      if (
+        confirm(
+          "Do you want to go to the original BreadImagine?\nhttps://imagine.breadtm.xyz"
+        )
+      ) {
+        window.top.location.href = "https://imagine.breadtm.xyz";
+      }
+    }
+  });
+
   let styles = writable([
     {
       style: "No Style",
@@ -431,7 +446,11 @@
           </label>
         </div>
       {/if}
-
+      <div
+        class="cf-turnstile"
+        data-sitekey="0x4AAAAAAABi3MEd7MkcHCwJ"
+        data-callback="javascriptCallback"
+      />
       <button
         type="submit"
         class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 {isTaskRunning
