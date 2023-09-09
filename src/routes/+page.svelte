@@ -1,6 +1,7 @@
 <script>
   // @ts-nocheck
   import { writable } from "svelte/store";
+  import { onMount } from "svelte";
 
   let prompt = writable("");
   let negativePrompt = writable("");
