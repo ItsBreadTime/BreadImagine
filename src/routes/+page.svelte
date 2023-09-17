@@ -46,13 +46,20 @@
   }
 
   onMount(() => {
-        if (window.self !== window.top) {
-            alert("This website is embedding BreadImagine, made by bread.trademark. Please use the original site instead at imagine.breadtm.xyz");
-            if(confirm("Do you want to go to the original BreadImagine?\nhttps://imagine.breadtm.xyz")) {
-                window.top.location.href = "https://imagine.breadtm.xyz";
-            }
-        }
-    });
+    alert("IMPORTANT:\nIf you're currently using the default model (SDXL), please switch to other model by clicking \"Show Advanced Options\" and then \"SDXL\" because Stability AI took back GPUs from Stable Horde, it is currently not working.")
+    if (window.self !== window.top) {
+      alert(
+        "This website is embedding BreadImagine, made by bread.trademark. Please use the original site instead at imagine.breadtm.xyz"
+      );
+      if (
+        confirm(
+          "Do you want to go to the original BreadImagine?\nhttps://imagine.breadtm.xyz"
+        )
+      ) {
+        window.top.location.href = "https://imagine.breadtm.xyz";
+      }
+    }
+  });
 
   let styles = writable([
     {
@@ -414,7 +421,7 @@
                 >ICBINP</option
               >
               <option value="Dreamshaper">Dreamshaper</option>
-              <option value="Deliberate">Deliberate</option>
+              <option value="Deliberate 3.0">Deliberate 3</option>
               <option value="Anything Diffusion">Anything Diffusion</option>
             </select>
           </label>
