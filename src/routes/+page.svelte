@@ -339,37 +339,19 @@
       >
         <p>Enter your AI Horde API key</p>
         <form method="dialog" on:submit|preventDefault={saveApiKey}>
-          {#if showApiKey}
-            <label>
-              <input
-                type="text"
-                required
-                bind:value={apiKey}
-                class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt mt-2 text-lg"
-                placeholder="API Key"
-              />
-            </label>
-          {:else}
             <label>
               <input
                 type="password"
                 required
                 bind:value={apiKey}
-                class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt mt-2 text-lg"
+                class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt my-3 text-lg"
                 placeholder="API Key"
               />
             </label>
-          {/if}
           <button
-            class="text-lg text-slate-300 mt-2 py-1 px-4 rounded bg-slate-800 w-1/2 md:w-2/3"
+            class="text-lg text-slate-300 py-1 px-4 rounded bg-slate-800 w-full"
             on:click={toggleDialog}>Close</button
           >
-          <button
-            class="text-lg text-slate-300 mt-2 py-1 px-4 rounded bg-slate-800"
-            on:click|preventDefault={() => (showApiKey = !showApiKey)}
-          >
-            {showApiKey ? "Hide" : "Show"} API Key
-          </button>
         </form>
       </div>
     </div>
