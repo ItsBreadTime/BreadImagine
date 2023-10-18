@@ -337,7 +337,7 @@
         transition:scale={{ duration: 300 }}
         class="p-6 bg-slate-700 text-2xl text-slate-300 rounded-lg border-2 border-slate-600 align-middle shadow-2xl shadow-slate-700 drop-shadow-2xl"
       >
-        <p>Enter your AI Horde API key</p>
+        <p>AI Horde API key</p>
         <form method="dialog" on:submit|preventDefault={saveApiKey}>
             <label>
               <input
