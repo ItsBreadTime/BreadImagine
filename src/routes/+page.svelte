@@ -17,6 +17,8 @@
   let showAdvancedOptions = false;
   let apiKey = "";
   let isDialogOpen = writable(!apiKey);
+  let interval;
+  let imageCount = writable(1);
 
   function toggleAdvancedOptions() {
     showAdvancedOptions = !showAdvancedOptions;
@@ -30,6 +32,11 @@
   }
   function saveApiKey() {
     localStorage.setItem("apiKey", apiKey);
+  }
+
+  function abortGeneration() {
+    clearInterval(interval);
+    isTaskRunning = false;
   }
 
   function resetAll() {
@@ -178,6 +185,7 @@
     sampler.set(localStorage.getItem("sampler") || "k_dpmpp_2m");
     cfgScale.set(localStorage.getItem("cfgScale") || "7");
     model.set(localStorage.getItem("model") || "SDXL 1.0");
+    imageCount.set(parseInt(localStorage.getItem("imageCount")) || 1);
 
     negativePrompt.subscribe((value) => {
       localStorage.setItem("negativePrompt", value);
@@ -203,6 +211,9 @@
     model.subscribe((value) => {
       localStorage.setItem("model", value);
     });
+imageCount.subscribe((value) => {
+  localStorage.setItem("imageCount", Number(value));
+});
 
     const storedOption = localStorage.getItem("showAdvancedOptions");
     showAdvancedOptions = storedOption === "true" ? true : false;
@@ -227,7 +238,6 @@
       prompt: `${positivePrompt} ### ${negativePrompt}`,
       params: {
         cfg_scale: parseInt($cfgScale),
-        seed: seedValue,
         sampler_name: $sampler,
         height: parseInt(height),
         width: parseInt(width),
@@ -237,7 +247,7 @@
         karras: true,
         hires_fix: $model !== "SDXL 1.0",
         clip_skip: 1,
-        n: 1,
+        n: $imageCount,
       },
       nsfw: true,
       censor_nsfw: false,
@@ -268,13 +278,12 @@
 
   let status = "";
 
-  let interval;
   let isTaskRunning = false;
 
   function startCheckStatus(id) {
     interval = setInterval(async () => {
       await checkStatus(id);
-    }, 1000);
+    }, 3000);
   }
 
   async function checkStatus(id) {
@@ -356,7 +365,7 @@
             />
           </label>
           <button
-            class="text-lg text-slate-200 py-1 px-4 rounded bg-slate-800 hover:bg-slate-900 transition-all w-full"
+            class="text-lg text-slate-200 py-1 px-4 rounded bg-sky-800 hover:bg-sky-900 transition-all w-full"
             on:click={toggleDialog}>Close</button
           >
         </form>
@@ -393,23 +402,46 @@
         />
       </label>
 
-      <div class="flex space-x-2">
+      <div class="flex space-x-1">
+        <button
+          on:click={() => {
+            imageCount.update((n) => {
+              switch (n) {
+                case 1:
+                  return 2;
+                case 2:
+                  return 4;
+                case 4:
+                  return 6;
+                case 6:
+                  return 1;
+                default:
+                  return 1;
+              }
+            });
+          }}
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-3/4 hover:bg-gray-900 transition-all text-lg"
+          title="Change the number of images to generate"
+        >
+          {$imageCount} Images
+        </button>
         <button
           on:click={toggleAdvancedOptions}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 w-full plausible-event-name=toggleAdvancedOptions hover:bg-gray-900 transition-all"
-          >{showAdvancedOptions ? "Hide" : "Show"} Advanced Options</button
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings hover:bg-gray-900 transition-all"
         >
+          <img src="options.svg" alt="Settings" />
+        </button>
         <button
           on:click={toggleDialog}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-12 hover:bg-gray-900 transition-all"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings hover:bg-gray-900 transition-all"
         >
-          <img src="settings.svg" alt="Settings" class="w-6 h-6" />
+          <img src="settings.svg" alt="Settings" />
         </button>
         <button
           on:click={resetAll}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll w-12 hover:bg-gray-900 transition-all"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll hover:bg-gray-900 transition-all"
         >
-          <img src="trash.svg" alt="Reset all" class="w-6 h-6" />
+          <img src="trash.svg" alt="Reset all" />
         </button>
       </div>
 
@@ -486,7 +518,7 @@
             <label class="w-full">
               <select
                 bind:value={$cfgScale}
-                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=cfgScale"
+                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=cfgScale mt-1"
               >
                 <option value="5">CFG: 5</option>
                 <option value="6">CFG: 6</option>
@@ -498,7 +530,7 @@
             <label class="w-full">
               <select
                 bind:value={$sampler}
-                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=sampler"
+                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=sampler mt-1"
               >
                 <option value="k_dpmpp_2m">DPM++ 2M</option>
                 <option value="k_dpmpp_2s_a">DPM++ 2S A</option>
@@ -535,7 +567,18 @@
           <div class="loading-container" transition:scale={{ duration: 200 }}>
             <img src="loading.svg" alt="Loading" width="100px" height="100px" />
           </div>
-          <p transition:scale={{ duration: 200 }}>Waiting time: {status}</p>
+          <p transition:scale={{ duration: 200 }}>Wait time: {status}</p>
+          <button
+            transition:scale={{ duration: 200 }}
+            type="button"
+            class="group plausible-event-name=abort text-lg font-medium w-full p-2 mt-4 bg-cyan-700 rounded hover:bg-cyan-800 transition-all {isTaskRunning
+              ? ''
+              : 'button-disabled'}"
+            disabled={!isTaskRunning}
+            on:click={abortGeneration}
+          >
+            Abort Generation
+          </button>
         </div>
       {:else if $generatedImages.length > 0}
         <div class="image-container">
