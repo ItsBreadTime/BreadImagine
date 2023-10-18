@@ -356,7 +356,7 @@
             />
           </label>
           <button
-            class="text-lg text-slate-200 py-1 px-4 rounded bg-slate-800 w-full"
+            class="text-lg text-slate-200 py-1 px-4 rounded bg-slate-800 hover:bg-slate-900 transition-all w-full"
             on:click={toggleDialog}>Close</button
           >
         </form>
@@ -396,18 +396,18 @@
       <div class="flex space-x-2">
         <button
           on:click={toggleAdvancedOptions}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 w-full plausible-event-name=toggleAdvancedOptions"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 w-full plausible-event-name=toggleAdvancedOptions hover:bg-gray-900 transition-all"
           >{showAdvancedOptions ? "Hide" : "Show"} Advanced Options</button
         >
         <button
           on:click={toggleDialog}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-12"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-12 hover:bg-gray-900 transition-all"
         >
           <img src="settings.svg" alt="Settings" class="w-6 h-6" />
         </button>
         <button
           on:click={resetAll}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll w-12"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll w-12 hover:bg-gray-900 transition-all"
         >
           <img src="trash.svg" alt="Reset all" class="w-6 h-6" />
         </button>
@@ -515,7 +515,7 @@
 
       <button
         type="submit"
-        class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 {isTaskRunning
+        class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 transition-all {isTaskRunning
           ? 'button-disabled'
           : ''}"
         disabled={isTaskRunning}
