@@ -238,7 +238,7 @@
         karras: true,
         hires_fix: $model !== "SDXL 1.0",
         clip_skip: 1,
-        n: $model !== "SDXL 1.0" ? 1 : 2,
+        n: 1,
       },
       nsfw: true,
       censor_nsfw: false,
