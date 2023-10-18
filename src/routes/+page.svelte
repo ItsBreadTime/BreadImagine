@@ -326,7 +326,7 @@
 </script>
 
 <div
-  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-200 px-4 lg:px-0"
+  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 px-4 lg:px-0"
 >
   {#if $isDialogOpen}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -377,7 +377,7 @@
   </p>
 
   <div
-    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-200 w-full lg:w-5/6 mx-auto flex flex-col lg:flex-row h-5/6"
+    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-300 w-full lg:w-5/6 mx-auto flex flex-col lg:flex-row h-5/6"
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
