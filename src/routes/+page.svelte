@@ -2,7 +2,7 @@
   // @ts-nocheck
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
-  import { scale, fade } from "svelte/transition";
+  import { scale, fade, slide } from "svelte/transition";
 
   let prompt = writable("");
   let negativePrompt = writable("");
@@ -327,15 +327,15 @@
 </script>
 
 <div
-  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 px-4 lg:px-0"
+  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-200 px-4 lg:px-0"
 >
   {#if $isDialogOpen}
-    <div transition:fade={{ duration: 300 }}
+    <div transition:fade={{ duration: 200 }}
       class="fixed inset-0 flex items-center justify-center z-50 bg-black
       bg-opacity-50 transition-all" >
       <div
-        transition:scale={{ duration: 300 }}
-        class="p-6 bg-slate-700 text-2xl text-slate-300 rounded-lg border-2 border-slate-600 align-middle shadow-2xl shadow-slate-700 drop-shadow-2xl"
+        transition:scale={{ duration: 200 }}
+        class="p-6 bg-slate-700 text-2xl text-slate-200 rounded-lg border-2 border-slate-600 align-middle shadow-2xl shadow-slate-700 drop-shadow-2xl"
       >
         <p>AI Horde API key</p>
         <form method="dialog" on:submit|preventDefault={saveApiKey}>
@@ -349,7 +349,7 @@
               />
             </label>
           <button
-            class="text-lg text-slate-300 py-1 px-4 rounded bg-slate-800 w-full"
+            class="text-lg text-slate-200 py-1 px-4 rounded bg-slate-800 w-full"
             on:click={toggleDialog}>Close</button
           >
         </form>
@@ -370,7 +370,7 @@
   </p>
 
   <div
-    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-300 w-full lg:w-5/6 mx-auto flex flex-col lg:flex-row h-5/6"
+    class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-200 w-full lg:w-5/6 mx-auto flex flex-col lg:flex-row h-5/6"
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
@@ -435,6 +435,7 @@
       </div>
 
       {#if showAdvancedOptions}
+      <div transition:slide={{ duration: 200 }}>
         <hr class="border-gray-600 mb-4 border-4 rounded" />
         <div class="flex">
           <label class="flex-grow">
@@ -503,6 +504,7 @@
             </select>
           </label>
         </div>
+        </div>
       {/if}
 
       <button
@@ -524,10 +526,10 @@
     >
       {#if isTaskRunning}
         <div>
-          <div class="loading-container" transition:scale={{ duration: 300 }}>
+          <div class="loading-container" transition:scale={{ duration: 200 }}>
             <img src="loading.svg" alt="Loading" width="100px" height="100px" />
           </div>
-          <p transition:scale={{ duration: 300 }}>Waiting time: {status}</p>
+          <p transition:scale={{ duration: 200 }}>Waiting time: {status}</p>
         </div>
       {:else if $generatedImages.length > 0}
         <div class="image-container">
