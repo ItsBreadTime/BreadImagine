@@ -17,7 +17,6 @@
   let showAdvancedOptions = false;
   let apiKey = "";
   let isDialogOpen = writable(!apiKey);
-  let showApiKey = false;
 
   function toggleAdvancedOptions() {
     showAdvancedOptions = !showAdvancedOptions;
@@ -257,7 +256,7 @@
         "accept-language": "en-US,en;q=0.9",
         "client-agent": "BreadImagine:v0.1:(discord)bread.trademark",
         "content-type": "application/json",
-        "Apikey": apiKey
+        Apikey: apiKey,
       },
       body: JSON.stringify(bodyObject),
       method: "POST",
@@ -330,24 +329,32 @@
   class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-200 px-4 lg:px-0"
 >
   {#if $isDialogOpen}
-    <div transition:fade={{ duration: 200 }}
-      class="fixed inset-0 flex items-center justify-center z-50 bg-black
-      bg-opacity-50 transition-all" >
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <div
+      role="dialog"
+      transition:fade={{ duration: 200 }}
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 transition-all"
+      on:click={toggleDialog}
+      on:keydown={toggleDialog}
+    >
       <div
+        role="dialog"
         transition:scale={{ duration: 200 }}
         class="p-6 bg-slate-700 text-2xl text-slate-200 rounded-lg border-2 border-slate-600 align-middle shadow-2xl shadow-slate-700 drop-shadow-2xl"
+        on:click|stopPropagation
+        on:keydown={toggleDialog}
       >
         <p>AI Horde API key</p>
         <form method="dialog" on:submit|preventDefault={saveApiKey}>
-            <label>
-              <input
-                type="password"
-                required
-                bind:value={apiKey}
-                class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt my-3 text-lg"
-                placeholder="API Key"
-              />
-            </label>
+          <label>
+            <input
+              type="password"
+              required
+              bind:value={apiKey}
+              class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt my-3 text-lg"
+              placeholder="API Key"
+            />
+          </label>
           <button
             class="text-lg text-slate-200 py-1 px-4 rounded bg-slate-800 w-full"
             on:click={toggleDialog}>Close</button
@@ -434,75 +441,75 @@
       </div>
 
       {#if showAdvancedOptions}
-      <div transition:slide={{ duration: 200 }}>
-        <hr class="border-gray-600 mb-4 border-4 rounded" />
-        <div class="flex">
-          <label class="flex-grow">
-            <textarea
-              rows="1"
-              bind:value={$negativePrompt}
-              class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 h-16 w-full plausible-event-name=negativePrompt"
-              placeholder="Negative Prompt (Optional)"
-            />
-          </label>
-        </div>
-        <div class="flex space-x-4">
-          <label class="w-full">
-            <select
-              bind:value={$steps}
-              class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=steps"
-            >
-              <option value="25">Steps: 25</option>
-              <option value="30">Steps: 30</option>
-              <option value="35">Steps: 35</option>
-              <option value="40">Steps: 40</option>
-              <option value="45">Steps: 45</option>
-              <option value="50">Steps: 50</option>
-            </select>
-          </label>
-          <label class="w-full">
-            <select
-              bind:value={$model}
-              class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
-            >
-              <option value="SDXL 1.0">SDXL</option>
-              <option value="ICBINP - I Can't Believe It's Not Photography"
-                >ICBINP</option
+        <div transition:slide={{ duration: 200 }}>
+          <hr class="border-gray-600 mb-4 border-4 rounded" />
+          <div class="flex">
+            <label class="flex-grow">
+              <textarea
+                rows="1"
+                bind:value={$negativePrompt}
+                class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 h-16 w-full plausible-event-name=negativePrompt"
+                placeholder="Negative Prompt (Optional)"
+              />
+            </label>
+          </div>
+          <div class="flex space-x-4">
+            <label class="w-full">
+              <select
+                bind:value={$steps}
+                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=steps"
               >
-              <option value="Dreamshaper">Dreamshaper</option>
-              <option value="Deliberate 3.0">Deliberate 3</option>
-              <option value="Anything Diffusion">Anything Diffusion</option>
-            </select>
-          </label>
-        </div>
-        <div class="flex space-x-4">
-          <label class="w-full">
-            <select
-              bind:value={$cfgScale}
-              class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=cfgScale"
-            >
-              <option value="5">CFG: 5</option>
-              <option value="6">CFG: 6</option>
-              <option value="7">CFG: 7</option>
-              <option value="8">CFG: 8</option>
-              <option value="9">CFG: 9</option>
-            </select>
-          </label>
-          <label class="w-full">
-            <select
-              bind:value={$sampler}
-              class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=sampler"
-            >
-              <option value="k_dpmpp_2m">DPM++ 2M</option>
-              <option value="k_dpmpp_2s_a">DPM++ 2S A</option>
-              <option value="k_dpmpp_sde">DPM++ SDE</option>
-              <option value="k_euler">Euler</option>
-              <option value="k_euler_a">Euler A</option>
-              <option value="DDIM">DDIM</option>
-              <option value="dpmsolver">dpmsolver</option>
-            </select>
-          </label>
-        </div>
+                <option value="25">Steps: 25</option>
+                <option value="30">Steps: 30</option>
+                <option value="35">Steps: 35</option>
+                <option value="40">Steps: 40</option>
+                <option value="45">Steps: 45</option>
+                <option value="50">Steps: 50</option>
+              </select>
+            </label>
+            <label class="w-full">
+              <select
+                bind:value={$model}
+                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
+              >
+                <option value="SDXL 1.0">SDXL</option>
+                <option value="ICBINP - I Can't Believe It's Not Photography"
+                  >ICBINP</option
+                >
+                <option value="Dreamshaper">Dreamshaper</option>
+                <option value="Deliberate 3.0">Deliberate 3</option>
+                <option value="Anything Diffusion">Anything Diffusion</option>
+              </select>
+            </label>
+          </div>
+          <div class="flex space-x-4">
+            <label class="w-full">
+              <select
+                bind:value={$cfgScale}
+                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=cfgScale"
+              >
+                <option value="5">CFG: 5</option>
+                <option value="6">CFG: 6</option>
+                <option value="7">CFG: 7</option>
+                <option value="8">CFG: 8</option>
+                <option value="9">CFG: 9</option>
+              </select>
+            </label>
+            <label class="w-full">
+              <select
+                bind:value={$sampler}
+                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=sampler"
+              >
+                <option value="k_dpmpp_2m">DPM++ 2M</option>
+                <option value="k_dpmpp_2s_a">DPM++ 2S A</option>
+                <option value="k_dpmpp_sde">DPM++ SDE</option>
+                <option value="k_euler">Euler</option>
+                <option value="k_euler_a">Euler A</option>
+                <option value="DDIM">DDIM</option>
+                <option value="dpmsolver">dpmsolver</option>
+              </select>
+            </label>
+          </div>
         </div>
       {/if}
 
