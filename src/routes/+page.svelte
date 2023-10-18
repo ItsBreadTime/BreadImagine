@@ -2,6 +2,7 @@
   // @ts-nocheck
   import { writable } from "svelte/store";
   import { onMount } from "svelte";
+  import { scale, fade } from "svelte/transition";
 
   let prompt = writable("");
   let negativePrompt = writable("");
@@ -12,14 +13,24 @@
   let sampler = writable("k_dpmpp_2m");
   let cfgScale = writable("7");
   let seed = writable("");
-  let model = writable("SDXL_beta::stability.ai#6901");
+  let model = writable("SDXL 1.0");
   let showAdvancedOptions = false;
+  let apiKey = "";
+  let isDialogOpen = writable(!apiKey);
+  let showApiKey = false;
 
   function toggleAdvancedOptions() {
     showAdvancedOptions = !showAdvancedOptions;
     if (typeof window !== "undefined") {
       localStorage.setItem("showAdvancedOptions", showAdvancedOptions);
     }
+  }
+
+  function toggleDialog() {
+    isDialogOpen.set(!$isDialogOpen);
+  }
+  function saveApiKey() {
+    localStorage.setItem("apiKey", apiKey);
   }
 
   function resetAll() {
@@ -37,7 +48,7 @@
       sampler.set("k_dpmpp_2m");
       cfgScale.set("7");
       seed.set("");
-      model.set("SDXL_beta::stability.ai#6901");
+      model.set("SDXL 1.0");
       showAdvancedOptions = false;
       if (typeof window !== "undefined") {
         localStorage.removeItem("showAdvancedOptions");
@@ -46,6 +57,10 @@
   }
 
   onMount(() => {
+    if (typeof window !== "undefined") {
+      apiKey = localStorage.getItem("apiKey") || "";
+      isDialogOpen.set(!apiKey);
+    }
     if (window.self !== window.top) {
       alert(
         "This website is embedding BreadImagine, made by bread.trademark. Please use the original site instead at imagine.breadtm.xyz"
@@ -156,13 +171,14 @@
   ]);
 
   if (typeof window !== "undefined") {
+    apiKey = localStorage.getItem("apiKey") || "";
     negativePrompt.set(localStorage.getItem("negativePrompt") || "");
     aspectRatio.set(localStorage.getItem("aspectRatio") || "1024x1024");
     steps.set(localStorage.getItem("steps") || "30");
     selectedStyle.set(localStorage.getItem("selectedStyle") || "No Style");
     sampler.set(localStorage.getItem("sampler") || "k_dpmpp_2m");
     cfgScale.set(localStorage.getItem("cfgScale") || "7");
-    model.set(localStorage.getItem("model") || "SDXL_beta::stability.ai#6901");
+    model.set(localStorage.getItem("model") || "SDXL 1.0");
 
     negativePrompt.subscribe((value) => {
       localStorage.setItem("negativePrompt", value);
@@ -220,9 +236,9 @@
         steps: parseInt($steps),
         tiling: false,
         karras: true,
-        hires_fix: $model !== "SDXL_beta::stability.ai#6901",
+        hires_fix: $model !== "SDXL 1.0",
         clip_skip: 1,
-        n: $model !== "SDXL_beta::stability.ai#6901" ? 1 : 2,
+        n: $model !== "SDXL 1.0" ? 1 : 2,
       },
       nsfw: true,
       censor_nsfw: false,
@@ -235,12 +251,13 @@
       dry_run: false,
     };
 
-    let response = await fetch("https://breadimagine.ibread.workers.dev", {
+    let response = await fetch("https://aihorde.net/api/v2/generate/async", {
       headers: {
         accept: "*/*",
         "accept-language": "en-US,en;q=0.9",
         "client-agent": "BreadImagine:v0.1:(discord)bread.trademark",
         "content-type": "application/json",
+        "Apikey": apiKey
       },
       body: JSON.stringify(bodyObject),
       method: "POST",
@@ -250,7 +267,6 @@
     startCheckStatus(data.id);
   }
 
-  let loadingIcon = `<img src="loading.svg">`;
   let status = "";
 
   let interval;
@@ -313,6 +329,51 @@
 <div
   class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 px-4 lg:px-0"
 >
+  {#if $isDialogOpen}
+    <div transition:fade={{ duration: 300 }}
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black
+      bg-opacity-50 transition-all" >
+      <div
+        transition:scale={{ duration: 300 }}
+        class="p-6 bg-slate-700 text-2xl text-slate-300 rounded-lg border-2 border-slate-600 align-middle shadow-2xl shadow-slate-700 drop-shadow-2xl"
+      >
+        <p>Enter your AI Horde API key</p>
+        <form method="dialog" on:submit|preventDefault={saveApiKey}>
+          {#if showApiKey}
+            <label>
+              <input
+                type="text"
+                required
+                bind:value={apiKey}
+                class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt mt-2 text-lg"
+                placeholder="API Key"
+              />
+            </label>
+          {:else}
+            <label>
+              <input
+                type="password"
+                required
+                bind:value={apiKey}
+                class="p-2 rounded border border-slate-600 bg-slate-800 w-full plausible-event-name=prompt mt-2 text-lg"
+                placeholder="API Key"
+              />
+            </label>
+          {/if}
+          <button
+            class="text-lg text-slate-300 mt-2 py-1 px-4 rounded bg-slate-800 w-1/2 md:w-2/3"
+            on:click={toggleDialog}>Close</button
+          >
+          <button
+            class="text-lg text-slate-300 mt-2 py-1 px-4 rounded bg-slate-800"
+            on:click|preventDefault={() => (showApiKey = !showApiKey)}
+          >
+            {showApiKey ? "Hide" : "Show"} API Key
+          </button>
+        </form>
+      </div>
+    </div>
+  {/if}
   <h1
     class="font-mono text-2xl lg:text-4xl font-bold tracking-wider w-full text-center"
   >
@@ -344,15 +405,21 @@
         />
       </label>
 
-      <div class="flex space-x-4">
+      <div class="flex space-x-2">
         <button
           on:click={toggleAdvancedOptions}
           class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 w-full plausible-event-name=toggleAdvancedOptions"
           >{showAdvancedOptions ? "Hide" : "Show"} Advanced Options</button
         >
         <button
+          on:click={toggleDialog}
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-12"
+        >
+          <img src="settings.svg" alt="Settings" class="w-6 h-6" />
+        </button>
+        <button
           on:click={resetAll}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll w-12"
         >
           <img src="trash.svg" alt="Reset all" class="w-6 h-6" />
         </button>
@@ -403,6 +470,7 @@
               bind:value={$steps}
               class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=steps"
             >
+              <option value="25">Steps: 25</option>
               <option value="30">Steps: 30</option>
               <option value="35">Steps: 35</option>
               <option value="40">Steps: 40</option>
@@ -415,7 +483,7 @@
               bind:value={$model}
               class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
             >
-              <option value="SDXL_beta::stability.ai#6901">SDXL</option>
+              <option value="SDXL 1.0">SDXL</option>
               <option value="ICBINP - I Can't Believe It's Not Photography"
                 >ICBINP</option
               >
@@ -474,10 +542,10 @@
     >
       {#if isTaskRunning}
         <div>
-          <div class="loading-container">
+          <div class="loading-container" transition:scale={{ duration: 300 }}>
             <img src="loading.svg" alt="Loading" width="100px" height="100px" />
           </div>
-          <p>Waiting time: {status}</p>
+          <p transition:scale={{ duration: 300 }}>Waiting time: {status}</p>
         </div>
       {:else if $generatedImages.length > 0}
         <div class="image-container">
