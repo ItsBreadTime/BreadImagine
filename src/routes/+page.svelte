@@ -46,8 +46,6 @@
   }
 
   onMount(() => {
-    alert("FREE GENERATION IS NO MORE.\nOffering free generation is not sustainable anymore. You will need to input your own API key in the future. Free generations may be revived but with fewer options, sorry for the inconvenience.")
-    alert("IMPORTANT:\nIf you're currently using the default model (SDXL), please switch to other model by clicking \"Show Advanced Options\" and then \"SDXL\" because Stability AI took back GPUs from Stable Horde, it is currently not working.")
     if (window.self !== window.top) {
       alert(
         "This website is embedding BreadImagine, made by bread.trademark. Please use the original site instead at imagine.breadtm.xyz"
@@ -324,7 +322,7 @@
     Generate images using <span class="font-semibold">SDXL</span>, powered by
     <a
       href="https://github.com/Haidra-Org/AI-Horde"
-      class="underline decoration-gray-500">Stable Horde</a
+      class="underline decoration-gray-500">AI Horde</a
     >.
   </p>
 
