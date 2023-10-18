@@ -380,7 +380,6 @@
       <label>
         <textarea
           rows="3"
-          required
           bind:value={$prompt}
           class="p-2 rounded border border-gray-600 bg-gray-800 mt-0 h-full w-full plausible-event-name=prompt"
           placeholder="Prompt"
