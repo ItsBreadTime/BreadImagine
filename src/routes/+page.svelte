@@ -402,7 +402,7 @@ imageCount.subscribe((value) => {
         />
       </label>
 
-      <div class="flex space-x-1">
+      <div class="flex space-x-2">
         <button
           on:click={() => {
             imageCount.update((n) => {
@@ -420,7 +420,7 @@ imageCount.subscribe((value) => {
               }
             });
           }}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-3/4 hover:bg-gray-900 transition-all text-lg"
+          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-full hover:bg-gray-900 transition-all text-lg"
           title="Change the number of images to generate"
         >
           {$imageCount} Images
@@ -429,19 +429,19 @@ imageCount.subscribe((value) => {
           on:click={toggleAdvancedOptions}
           class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings hover:bg-gray-900 transition-all"
         >
-          <img src="options.svg" alt="Settings" />
+          <img src="options.svg" alt="Settings" width="48" />
         </button>
         <button
           on:click={toggleDialog}
           class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings hover:bg-gray-900 transition-all"
         >
-          <img src="settings.svg" alt="Settings" />
+          <img src="settings.svg" alt="Settings" width="48" />
         </button>
         <button
           on:click={resetAll}
           class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll hover:bg-gray-900 transition-all"
         >
-          <img src="trash.svg" alt="Reset all" />
+          <img src="trash.svg" alt="Reset all" width="48" />
         </button>
       </div>
 
