@@ -19,6 +19,7 @@
   let isDialogOpen = writable(!apiKey);
   let interval;
   let imageCount = writable(1);
+  let kudos = writable(0);
 
   function toggleAdvancedOptions() {
     showAdvancedOptions = !showAdvancedOptions;
@@ -42,7 +43,7 @@
   function resetAll() {
     if (
       confirm(
-        "This will reset ALL of your selected options.\nAre you sure you want to continue?"
+        "This will reset ALL of your selected options.\nAre you sure you want to continue?",
       )
     ) {
       prompt.set("");
@@ -62,10 +63,11 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
     if (typeof window !== "undefined") {
       apiKey = localStorage.getItem("apiKey") || "";
       isDialogOpen.set(!apiKey);
+      await fetchKudos();
     }
   });
 
@@ -199,9 +201,9 @@
     model.subscribe((value) => {
       localStorage.setItem("model", value);
     });
-imageCount.subscribe((value) => {
-  localStorage.setItem("imageCount", Number(value));
-});
+    imageCount.subscribe((value) => {
+      localStorage.setItem("imageCount", Number(value));
+    });
 
     const storedOption = localStorage.getItem("showAdvancedOptions");
     showAdvancedOptions = storedOption === "true" ? true : false;
@@ -217,7 +219,7 @@ imageCount.subscribe((value) => {
     let seedValue = $seed || Math.floor(Math.random() * 1000000).toString();
 
     let selectedStyleObj = $styles.find(
-      (style) => style.style === $selectedStyle
+      (style) => style.style === $selectedStyle,
     );
     let positivePrompt = selectedStyleObj.positive.replace("{prompt}", $prompt);
     let negativePrompt = selectedStyleObj.negative;
@@ -262,6 +264,7 @@ imageCount.subscribe((value) => {
 
     let data = await response.json();
     startCheckStatus(data.id);
+    await fetchKudos();
   }
 
   let status = "";
@@ -304,20 +307,36 @@ imageCount.subscribe((value) => {
           "client-agent": "BreadImagine:v.0.1:(discord)bread.trademark",
           "content-type": "application/json",
         },
-      }
+      },
     );
     const data = await response.json();
     const images = data.generations.map((gen) => gen.img);
     generatedImages.set(images);
   }
   function handleKeyDown(event) {
-    // Checking the Ctrl + Enter combination
     if (event.ctrlKey && event.key === "Enter") {
       if (!isTaskRunning) {
         generateImage(event);
       }
-      // prevent the form from submitting and refreshing the page
       event.preventDefault();
+    }
+  }
+  async function fetchKudos() {
+    if (!apiKey) return; // Exit if API key is not available
+
+    try {
+      const response = await fetch("https://stablehorde.net/api/v2/find_user", {
+        headers: {
+          accept: "application/json",
+          apikey: apiKey,
+        },
+        method: "GET",
+      });
+
+      const data = await response.json();
+      kudos.set(data.kudos);
+    } catch (error) {
+      console.error("Error fetching kudos:", error);
     }
   }
 </script>
@@ -372,7 +391,11 @@ imageCount.subscribe((value) => {
       class="underline decoration-gray-500">AI Horde</a
     >.
   </p>
-
+  <span
+    class="md:fixed text-slate-400 md:top-0 md:right-0 md:p-8 text-xs md:text-s lg:text-sm"
+  >
+    Kudos: {$kudos}
+  </span>
   <div
     class="bg-gray-700 p-4 lg:p-10 rounded-lg mt-4 text-gray-300 w-full lg:w-5/6 mx-auto flex flex-col lg:flex-row h-5/6"
   >
@@ -402,7 +425,26 @@ imageCount.subscribe((value) => {
                 case 4:
                   return 6;
                 case 6:
+                  return 8;
+                case 8:
                   return 1;
+                default:
+                  return 1;
+              }
+            });
+          }}
+          on:contextmenu={(event) => {
+            event.preventDefault(); // Prevent the browser's context menu
+            imageCount.update((n) => {
+              switch (n) {
+                case 2:
+                  return 1;
+                case 4:
+                  return 2;
+                case 6:
+                  return 4;
+                case 1:
+                  return 6;
                 default:
                   return 1;
               }
@@ -546,7 +588,6 @@ imageCount.subscribe((value) => {
         >
       </button>
     </form>
-
     <div
       class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/4 xl:w-full h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
     >
@@ -591,18 +632,15 @@ imageCount.subscribe((value) => {
     width: 10px;
   }
 
-  /* Track */
   ::-webkit-scrollbar-track {
     background: theme(colors.slate.800);
   }
 
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: theme(colors.slate.600);
     border: 1px solid theme(colors.neutral.800);
   }
 
-  /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: theme(colors.slate.500);
   }
@@ -616,8 +654,8 @@ imageCount.subscribe((value) => {
   }
 
   .loading-container img {
-    width: 100px; /* adjust as needed */
-    height: 100px; /* adjust as needed */
+    width: 100px;
+    height: 100px;
   }
 
   .image-container {
@@ -633,9 +671,9 @@ imageCount.subscribe((value) => {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    flex-grow: 0; /* Prevent images from stretching */
-    flex-shrink: 0; /* Prevent images from shrinking */
-    padding: 5px; /* Add spacing between images */
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 5px;
   }
   .button-disabled {
     opacity: 0.5;
