@@ -13,13 +13,14 @@
   let sampler = writable("k_dpmpp_2m");
   let cfgScale = writable("7");
   let seed = writable("");
-  let model = writable("SDXL 1.0");
+  let model = writable("AlbedoBase XL (SDXL)");
   let showAdvancedOptions = false;
   let apiKey = "";
   let isDialogOpen = writable(!apiKey);
   let interval;
   let imageCount = writable(1);
   let kudos = writable(0);
+  let models = writable([]);
 
   function toggleAdvancedOptions() {
     showAdvancedOptions = !showAdvancedOptions;
@@ -55,7 +56,7 @@
       sampler.set("k_dpmpp_2m");
       cfgScale.set("7");
       seed.set("");
-      model.set("SDXL 1.0");
+      model.set("AlbedoBase XL (SDXL)");
       showAdvancedOptions = false;
       if (typeof window !== "undefined") {
         localStorage.removeItem("showAdvancedOptions");
@@ -67,9 +68,30 @@
     if (typeof window !== "undefined") {
       apiKey = localStorage.getItem("apiKey") || "";
       isDialogOpen.set(!apiKey);
+      await fetchModels();
       await fetchKudos();
     }
   });
+
+  async function fetchModels() {
+    try {
+      const response = await fetch(
+        "https://stablehorde.net/api/v2/status/models?type=image&model_state=all",
+        {
+          headers: {
+            accept: "application/json",
+            "client-agent": "BreadImagine:v.0.2:(discord)bread.trademark",
+          },
+        },
+      );
+
+      const data = await response.text();
+      const modelArray = JSON.parse(data);
+      models.set(modelArray);
+    } catch (error) {
+      console.error("Error fetching models:", error);
+    }
+  }
 
   let styles = writable([
     {
@@ -174,7 +196,7 @@
     selectedStyle.set(localStorage.getItem("selectedStyle") || "No Style");
     sampler.set(localStorage.getItem("sampler") || "k_dpmpp_2m");
     cfgScale.set(localStorage.getItem("cfgScale") || "7");
-    model.set(localStorage.getItem("model") || "SDXL 1.0");
+    model.set(localStorage.getItem("model.name") || "AlbedoBase XL (SDXL)");
     imageCount.set(parseInt(localStorage.getItem("imageCount")) || 1);
 
     negativePrompt.subscribe((value) => {
@@ -199,7 +221,7 @@
       localStorage.setItem("seed", value);
     });
     model.subscribe((value) => {
-      localStorage.setItem("model", value);
+      localStorage.setItem("model.name", value);
     });
     imageCount.subscribe((value) => {
       localStorage.setItem("imageCount", Number(value));
@@ -235,7 +257,7 @@
         steps: parseInt($steps),
         tiling: false,
         karras: true,
-        hires_fix: $model !== "SDXL 1.0",
+        hires_fix: false,
         clip_skip: 1,
         n: $imageCount,
       },
@@ -283,7 +305,7 @@
       headers: {
         accept: "*/*",
         "accept-language": "en-US,en;q=0.9",
-        "client-agent": "BreadImagine:v.0.1:(discord)bread.trademark",
+        "client-agent": "BreadImagine:v.0.2:(discord)bread.trademark",
         "content-type": "application/json",
       },
     });
@@ -304,7 +326,7 @@
         headers: {
           accept: "*/*",
           "accept-language": "en-US,en;q=0.9",
-          "client-agent": "BreadImagine:v.0.1:(discord)bread.trademark",
+          "client-agent": "BreadImagine:v.0.2:(discord)bread.trademark",
           "content-type": "application/json",
         },
       },
@@ -385,7 +407,8 @@
     BreadImagine
   </h1>
   <p class="mb-4 hidden md:block">
-    Generate images using <span class="font-semibold">SDXL</span>, powered by
+    Generate images using <span class="font-semibold">Stable Diffusion</span>,
+    powered by
     <a
       href="https://github.com/Haidra-Org/AI-Horde"
       class="underline decoration-gray-500">AI Horde</a
@@ -413,7 +436,7 @@
         />
       </label>
 
-      <div class="flex space-x-2">
+      <div class="flex">
         <button
           on:click={() => {
             imageCount.update((n) => {
@@ -480,7 +503,7 @@
           Ratio:
           <select
             bind:value={$aspectRatio}
-            class="p-2 rounded border border-gray-600 bg-gray-800 mt-2 w-full plausible-event-name=aspectRatio"
+            class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=aspectRatio"
           >
             <option value="1024x1024">1:1 (Square)</option>
             <option value="1344x768">16:9 (Landscape)</option>
@@ -493,10 +516,21 @@
           Style:
           <select
             bind:value={$selectedStyle}
-            class="p-2 rounded border border-gray-600 bg-gray-800 mt-2 w-full plausible-event-name=selectedStyle"
+            class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=selectedStyle"
           >
             {#each $styles as style (style.style)}
               <option>{style.style}</option>
+            {/each}
+          </select>
+        </label>
+        <label class="w-full">
+          Model:
+          <select
+            bind:value={$model}
+            class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
+          >
+            {#each $models as model}
+              <option value={model.name}>{model.name}</option>
             {/each}
           </select>
         </label>
@@ -527,20 +561,6 @@
                 <option value="40">Steps: 40</option>
                 <option value="45">Steps: 45</option>
                 <option value="50">Steps: 50</option>
-              </select>
-            </label>
-            <label class="w-full">
-              <select
-                bind:value={$model}
-                class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
-              >
-                <option value="SDXL 1.0">SDXL</option>
-                <option value="ICBINP - I Can't Believe It's Not Photography"
-                  >ICBINP</option
-                >
-                <option value="Dreamshaper">Dreamshaper</option>
-                <option value="Deliberate 3.0">Deliberate 3</option>
-                <option value="Anything Diffusion">Anything Diffusion</option>
               </select>
             </label>
           </div>
