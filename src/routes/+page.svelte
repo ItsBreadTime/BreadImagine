@@ -22,26 +22,26 @@
   let kudos = writable(0);
   let models = writable([]);
 
-  function toggleAdvancedOptions() {
+  async function toggleAdvancedOptions() {
     showAdvancedOptions = !showAdvancedOptions;
     if (typeof window !== "undefined") {
       localStorage.setItem("showAdvancedOptions", showAdvancedOptions);
     }
   }
 
-  function toggleDialog() {
+  async function toggleDialog() {
     isDialogOpen.set(!$isDialogOpen);
   }
-  function saveApiKey() {
+  async function saveApiKey() {
     localStorage.setItem("apiKey", apiKey);
   }
 
-  function abortGeneration() {
+  async function abortGeneration() {
     clearInterval(interval);
     isTaskRunning = false;
   }
 
-  function resetAll() {
+  async function resetAll() {
     if (
       confirm(
         "This will reset ALL of your selected options.\nAre you sure you want to continue?",
@@ -293,7 +293,7 @@
 
   let isTaskRunning = false;
 
-  function startCheckStatus(id) {
+  async function startCheckStatus(id) {
     interval = setInterval(async () => {
       await checkStatus(id);
     }, 3000);
@@ -335,7 +335,7 @@
     const images = data.generations.map((gen) => gen.img);
     generatedImages.set(images);
   }
-  function handleKeyDown(event) {
+  async function handleKeyDown(event) {
     if (event.ctrlKey && event.key === "Enter") {
       if (!isTaskRunning) {
         generateImage(event);
@@ -364,7 +364,7 @@
 </script>
 
 <div
-  class="h-screen flex flex-col items-center justify-center tracking-widest text-gray-300 px-4 lg:px-0"
+  class="h-screen flex flex-col items-center justify-center text-gray-300 px-4 lg:px-0"
 >
   {#if $isDialogOpen}
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -424,80 +424,43 @@
   >
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <form
-      class="flex flex-col mt-4 space-y-4 w-full lg:w-1/2 mr-0 lg:mr-4"
+      class="flex flex-col space-y-4 w-full lg:w-1/2 mr-0 lg:mr-4 overflow-y-auto"
       on:keydown={handleKeyDown}
     >
+      <button
+        type="submit"
+        class="group plausible-event-name=generate text-lg font-medium w-full p-2 bg-blue-700 rounded hover:bg-blue-800 transition-all {isTaskRunning
+          ? 'button-disabled'
+          : ''}"
+        disabled={isTaskRunning}
+        on:click={generateImage}
+        >Generate <span class=" font-light">{$imageCount} images</span><span
+          class="hidden md:inline-block text-xs ml-1 font-medium bg-blue-800 p-1 rounded group-hover:bg-blue-900"
+          >CTRL+Enter</span
+        >
+      </button>
       <label>
         <textarea
-          rows="3"
+          rows="2"
           bind:value={$prompt}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-0 h-full w-full plausible-event-name=prompt"
+          class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=prompt"
           placeholder="Prompt"
         />
       </label>
 
-      <div class="flex">
-        <button
-          on:click={() => {
-            imageCount.update((n) => {
-              switch (n) {
-                case 1:
-                  return 2;
-                case 2:
-                  return 4;
-                case 4:
-                  return 6;
-                case 6:
-                  return 8;
-                case 8:
-                  return 1;
-                default:
-                  return 1;
-              }
-            });
-          }}
-          on:contextmenu={(event) => {
-            event.preventDefault(); // Prevent the browser's context menu
-            imageCount.update((n) => {
-              switch (n) {
-                case 2:
-                  return 1;
-                case 4:
-                  return 2;
-                case 6:
-                  return 4;
-                case 1:
-                  return 6;
-                default:
-                  return 1;
-              }
-            });
-          }}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings w-full hover:bg-gray-900 transition-all text-lg"
-          title="Change the number of images to generate"
-        >
-          {$imageCount} Images
-        </button>
-        <button
-          on:click={toggleAdvancedOptions}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings hover:bg-gray-900 transition-all"
-        >
-          <img src="options.svg" alt="Settings" width="48" />
-        </button>
-        <button
-          on:click={toggleDialog}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=settings hover:bg-gray-900 transition-all"
-        >
-          <img src="settings.svg" alt="Settings" width="48" />
-        </button>
-        <button
-          on:click={resetAll}
-          class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 plausible-event-name=resetAll hover:bg-gray-900 transition-all"
-        >
-          <img src="trash.svg" alt="Reset all" width="48" />
-        </button>
+      <div>
+        <label class="w-full">
+          Model:
+          <select
+            bind:value={$model}
+            class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
+          >
+            {#each $models as model}
+              <option value={model.name}>{model.name}</option>
+            {/each}
+          </select>
+        </label>
       </div>
-
       <div class="flex space-x-4">
         <label class="w-full">
           Ratio:
@@ -523,31 +486,47 @@
             {/each}
           </select>
         </label>
-        <label class="w-full">
-          Model:
-          <select
-            bind:value={$model}
-            class="p-2 rounded border border-gray-600 bg-gray-800 w-full plausible-event-name=model"
-          >
-            {#each $models as model}
-              <option value={model.name}>{model.name}</option>
-            {/each}
-          </select>
-        </label>
+      </div>
+      <div class="flex">
+        <input
+          type="range"
+          min="1"
+          max="10"
+          bind:value={$imageCount}
+          class="w-full rounded appearance-none bg-gray-800 border-gray-600 border [&::-webkit-slider-runnable-track]:rounded [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-[45px] [&::-webkit-slider-thumb]:w-[50px] [&::-webkit-slider-thumb]:rounded [&::-webkit-slider-thumb]:bg-slate-400"
+        />
+        <button
+          on:click={toggleAdvancedOptions}
+          class="p-2 rounded border border-gray-600 bg-gray-800 plausible-event-name=settings hover:bg-gray-900 transition-all"
+        >
+          <img src="options.svg" alt="Settings" width="48" />
+        </button>
+        <button
+          on:click={toggleDialog}
+          class="p-2 rounded border border-gray-600 bg-gray-800 plausible-event-name=settings hover:bg-gray-900 transition-all"
+        >
+          <img src="settings.svg" alt="Settings" width="48" />
+        </button>
+        <button
+          on:click={resetAll}
+          class="p-2 rounded border border-gray-600 bg-gray-800 plausible-event-name=resetAll hover:bg-gray-900 transition-all"
+        >
+          <img src="trash.svg" alt="Reset all" width="48" />
+        </button>
       </div>
 
       {#if showAdvancedOptions}
         <div transition:slide={{ duration: 200 }}>
           <hr class="border-gray-600 mb-4 border-4 rounded" />
           <div class="flex">
-            <label class="flex-grow">
+            <!--<label class="flex-grow">
               <textarea
                 rows="1"
                 bind:value={$negativePrompt}
                 class="p-2 rounded border border-gray-600 bg-gray-800 mt-1 h-16 w-full plausible-event-name=negativePrompt"
                 placeholder="Negative Prompt (Optional)"
               />
-            </label>
+            </label>-->
           </div>
           <div class="flex space-x-4">
             <label class="w-full">
@@ -594,19 +573,6 @@
           </div>
         </div>
       {/if}
-
-      <button
-        type="submit"
-        class="group plausible-event-name=generate text-lg font-medium w-full p-2 mt-4 bg-blue-700 rounded hover:bg-blue-800 transition-all {isTaskRunning
-          ? 'button-disabled'
-          : ''}"
-        disabled={isTaskRunning}
-        on:click={generateImage}
-        >Generate <span
-          class="hidden md:inline-block text-xs ml-1 font-medium bg-blue-800 p-1 rounded group-hover:bg-blue-900"
-          >CTRL+Enter</span
-        >
-      </button>
     </form>
     <div
       class="lg:ml-2 mt-4 lg:mt-0 bg-gray-600 w-full lg:w-3/4 xl:w-full h-full rounded-lg flex items-center justify-center text-lg font-semibold text-center overflow-auto"
