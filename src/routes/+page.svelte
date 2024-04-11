@@ -15,7 +15,7 @@
   let seed = writable("");
   let model = writable("AlbedoBase XL (SDXL)");
   let showAdvancedOptions = false;
-  let apiKey = "";
+  let apiKey = "0000000000";
   let isDialogOpen = writable(!apiKey);
   let interval;
   let imageCount = writable(1);
@@ -370,14 +370,12 @@
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <div
       role="dialog"
-      transition:fade={{ duration: 200 }}
       class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 transition-all"
       on:click={toggleDialog}
       on:keydown={toggleDialog}
     >
       <div
         role="dialog"
-        transition:scale={{ duration: 200 }}
         class="p-6 bg-slate-700 text-2xl text-slate-200 rounded-lg border-2 border-slate-600 align-middle shadow-2xl shadow-slate-700 drop-shadow-2xl"
         on:click|stopPropagation
         on:keydown={toggleDialog}
