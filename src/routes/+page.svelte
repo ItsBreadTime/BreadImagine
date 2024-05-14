@@ -76,7 +76,7 @@
   async function fetchModels() {
     try {
       const response = await fetch(
-        "https://stablehorde.net/api/v2/status/models?type=image&model_state=all",
+        "https://aihorde.net/api/v2/status/models?type=image&model_state=all",
         {
           headers: {
             accept: "application/json",
@@ -347,7 +347,7 @@
     if (!apiKey) return; // Exit if API key is not available
 
     try {
-      const response = await fetch("https://stablehorde.net/api/v2/find_user", {
+      const response = await fetch("https://aihorde.net/api/v2/find_user", {
         headers: {
           accept: "application/json",
           apikey: apiKey,
